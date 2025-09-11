@@ -4,7 +4,7 @@ export const extraMenuLinksObjects = [
   {
     label: "Envio",
     href: "/envio",
-    icon: '<BoltIcon className="h-4 w-4" />',
+    icon: '$$<BoltIcon className="h-4 w-4" />$$',
   },
 ];
 
