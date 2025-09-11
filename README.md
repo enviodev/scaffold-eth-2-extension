@@ -70,7 +70,7 @@ The extension generates these files in `packages/envio/`:
 
 ## 🚀 Production Deployment
 
-1. Deploy contracts: `yarn deploy --network sepolia`
+1. Deploy contracts: `yarn deploy`
 2. Update indexer: `cd packages/envio && pnpm update`
 3. Start indexer: `pnpm start`
 
