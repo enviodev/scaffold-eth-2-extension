@@ -148,8 +148,11 @@ const EnvioPage = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
-            <BoltIcon className="h-12 w-12 text-primary mr-3" />
-            <h1 className="text-4xl font-bold">Envio</h1>
+            <img 
+              src="https://docs.envio.dev/img/envio-logo.png" 
+              alt="Envio Logo" 
+              className="h-16 w-auto"
+            />
           </div>
           <p className="text-lg text-base-content/70">The fastest, most flexible way to get on-chain data.</p>
         </div>
