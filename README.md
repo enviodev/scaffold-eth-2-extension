@@ -2,7 +2,21 @@
 
 > **⚠️ Important:** This repository contains the **extension code** that gets merged into Scaffold-ETH 2 projects. This codebase is not useful on its own - it's only what gets integrated when you create a new Scaffold-ETH project with this extension.
 
+## 🚀 How to Use This Extension
+
+To create a new Scaffold-ETH 2 project with this Envio extension:
+
+```bash
+npx create-eth@latest -e envio/scaffold-eth-2-extension
+```
+
+This will create a complete Scaffold-ETH 2 project with the Envio indexer extension already integrated.
+
 This extension adds **automatic Envio indexer generation** to your Scaffold-ETH 2 project, allowing you to index all your deployed smart contracts and query their data through a GraphQL API.
+
+
+
+
 
 ## ✨ What It Does
 
@@ -14,16 +28,6 @@ This extension adds **automatic Envio indexer generation** to your Scaffold-ETH 
 
 
 
-
-## 🚀 How to Use This Extension
-
-To create a new Scaffold-ETH 2 project with this Envio extension:
-
-```bash
-npx create-eth@latest -e envio/scaffold-eth-2-extension
-```
-
-This will create a complete Scaffold-ETH 2 project with the Envio indexer extension already integrated.
 
 ## 🔧 Available Commands
 
