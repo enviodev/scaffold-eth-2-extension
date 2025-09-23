@@ -7,7 +7,7 @@
 To create a new Scaffold-ETH 2 project with this Envio extension:
 
 ```bash
-npx create-eth@latest -e envio/scaffold-eth-2-extension
+npx create-eth@latest -e enviodev/scaffold-eth-2-extension
 ```
 
 This will create a complete Scaffold-ETH 2 project with the Envio indexer extension already integrated.
