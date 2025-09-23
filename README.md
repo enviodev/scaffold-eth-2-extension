@@ -63,16 +63,9 @@ pnpm test     # Run indexer tests
 
 ## 🔄 Regenerating the Indexer
 
-**Via Frontend:** Go to `http://localhost:3000/envio` and click "Regenerate Boilerplate Indexer"
+**Via Frontend:** Go to the envio page (`http://localhost:3000/envio`) and click the "Generate" button.
 
 **Via Command Line:** `cd packages/envio && pnpm update && pnpm codegen`
-
-## 📊 What Gets Indexed
-
-- All contract events from your deployed contracts
-- Event parameters with proper type mapping
-- Block and transaction data for each event
-- Timestamps and block numbers for historical queries
 
 ---
 
