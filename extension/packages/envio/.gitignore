@@ -27,7 +27,6 @@ lib/*
 /node_modules/
 benchmarks/
 artifacts
-.pnpm-store
 logs
 *.res.js
 *.res.mjs

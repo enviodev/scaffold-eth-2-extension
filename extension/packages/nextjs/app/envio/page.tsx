@@ -201,7 +201,7 @@ const EnvioPage = () => {
               <p className="text-sm text-base-content/70">
                 {indexerStatus === "inactive" ? (
                   <>
-                    Indexer is not running. Start the indexer by running <code>pnpm dev</code> in the{" "}
+                    Indexer is not running. Start the indexer by running <code>yarn dev</code> in the{" "}
                     <code>packages/envio</code> directory.
                     <br />
                     (be sure to generate it first if you haven&apos;t already)
@@ -443,9 +443,6 @@ const EnvioPage = () => {
                   • <strong>Node.js v22+</strong> - Required for the development environment (v24 recommended)
                 </li>
                 <li>
-                  • <strong>pnpm v8+</strong> - Package manager (use v8 or newer)
-                </li>
-                <li>
                   • <strong>Docker Desktop</strong> - Required for running the indexer locally
                 </li>
               </ul>
@@ -465,7 +462,7 @@ const EnvioPage = () => {
                   ready to index all events from your deployed contracts. You can regenerate this at any time.
                 </p>
                 <p>
-                  <strong>Step 3:</strong> Run <code className="bg-base-200 px-1 rounded">pnpm dev</code> in the{" "}
+                  <strong>Step 3:</strong> Run <code className="bg-base-200 px-1 rounded">yarn dev</code> in the{" "}
                   <code className="bg-base-200 px-1 rounded">packages/envio</code> directory to start the indexer. This
                   will begin indexing your contract events.
                 </p>
@@ -495,7 +492,7 @@ const EnvioPage = () => {
                   <p className="text-sm text-base-content/80">
                     <strong>Note:</strong> If you regenerate the boilerplate indexer after making changes, you&apos;ll
                     need to stop the running indexer (Ctrl+C) and restart it with{" "}
-                    <code className="bg-base-200 px-1 rounded">pnpm dev</code>
+                    <code className="bg-base-200 px-1 rounded">yarn dev</code>
                     for the changes to take effect.
                   </p>
                 </div>

@@ -24,16 +24,16 @@ You can also run the update manually from the command line:
 
 ```bash
 # From the packages/envio directory
-pnpm run update
+yarn run update
 ```
 
 ### Custom Paths
 ```bash
 # Specify custom scaffold-eth path
-pnpm run update -- --scaffold-path=/path/to/your/scaffold-eth
+yarn run update --scaffold-path=/path/to/your/scaffold-eth
 
 # Specify custom envio directory
-pnpm run update -- --envio-dir=/path/to/your/envio
+yarn run update --envio-dir=/path/to/your/envio
 ```
 
 ## What Files Are Parsed
@@ -87,7 +87,7 @@ TypeScript event handlers registered with `indexer.onEvent` from the `envio` pac
 ## Requirements
 
 - Node.js 22+ (24 recommended)
-- pnpm (or npm/yarn)
+- Yarn
 - TypeScript
 - envio CLI
 - Docker (for running the indexer)
@@ -101,8 +101,8 @@ TypeScript event handlers registered with `indexer.onEvent` from the `envio` pac
 
 After running the update:
 
-1. Run `pnpm codegen` to generate TypeScript types
-2. Run `pnpm dev` to start the indexer
+1. Run `yarn codegen` to generate TypeScript types
+2. Run `yarn dev` to start the indexer
 3. Access the Envio console at http://localhost:9898
 4. Access the Hasura console at http://localhost:8080
 
@@ -123,15 +123,15 @@ Make sure the scaffold-eth path is correct and the expected files exist:
 ### TypeScript Compilation Errors
 Ensure all dependencies are installed:
 ```bash
-pnpm install
+yarn install
 ```
 
 ## Development
 
 ### Running the Generator Directly
 ```bash
-# Same as pnpm run update
-pnpm exec tsx se-integration/updateEnvio.ts
+# Same as yarn run update
+yarn tsx se-integration/updateEnvio.ts
 ```
 
 ### Adding New Chain Support

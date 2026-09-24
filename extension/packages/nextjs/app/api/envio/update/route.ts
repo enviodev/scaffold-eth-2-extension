@@ -8,8 +8,8 @@ export async function POST() {
   try {
     console.log("🔄 API: Starting Envio config update...");
 
-    // Run the update script using pnpm
-    const { stdout, stderr } = await execAsync("cd ../envio && pnpm run update");
+    // Run the update script using yarn
+    const { stdout, stderr } = await execAsync("cd ../envio && yarn run update");
 
     console.log("📊 Update script output:", stdout);
 
