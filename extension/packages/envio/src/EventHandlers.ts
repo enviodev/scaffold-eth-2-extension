@@ -3,19 +3,22 @@
  * This file is auto-generated from scaffold-eth contracts
  */
 import {
-  YourContract,
-  YourContract_GreetingChange,
-} from "generated";
+  indexer,
+  type YourContract_GreetingChange,
+} from "envio";
 
-YourContract.GreetingChange.handler(async ({ event, context }) => {
-  const entity: YourContract_GreetingChange = {
-    id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
-    greetingSetter: event.params.greetingSetter,
-    newGreeting: event.params.newGreeting,
-    premium: event.params.premium,
-    value: event.params.value,
-  };
+indexer.onEvent(
+  { contract: "YourContract", event: "GreetingChange" },
+  async ({ event, context }) => {
+    const entity: YourContract_GreetingChange = {
+      id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+      greetingSetter: event.params.greetingSetter,
+      newGreeting: event.params.newGreeting,
+      premium: event.params.premium,
+      value: event.params.value,
+    };
 
-  context.YourContract_GreetingChange.set(entity);
-});
+    context.YourContract_GreetingChange.set(entity);
+  },
+);
 

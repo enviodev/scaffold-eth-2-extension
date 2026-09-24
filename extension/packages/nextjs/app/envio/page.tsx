@@ -440,7 +440,7 @@ const EnvioPage = () => {
               </p>
               <ul className="text-sm text-base-content/70 text-left space-y-1">
                 <li>
-                  • <strong>Node.js v20</strong> - Required for the development environment
+                  • <strong>Node.js v22+</strong> - Required for the development environment (v24 recommended)
                 </li>
                 <li>
                   • <strong>pnpm v8+</strong> - Package manager (use v8 or newer)

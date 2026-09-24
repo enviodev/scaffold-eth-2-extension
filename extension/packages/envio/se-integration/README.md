@@ -24,7 +24,7 @@ You can also run the update manually from the command line:
 
 ```bash
 # From the packages/envio directory
-pnpm update
+pnpm run update
 ```
 
 ### Custom Paths
@@ -54,25 +54,27 @@ The integration generates these Envio files:
 ### config.yaml
 ```yaml
 name: envio-indexer
-networks:
-  - id: 31337  # Chain ID from scaffold.config.ts
+disable_default_cross_chain: true
+contracts:
+  - name: YourContract  # Contract name
+    handler: src/EventHandlers.ts
+    events:
+      - event: EventName(type1 param1, type2 param2)  # Event signatures
+chains:
+  - id: 31337  # Chain ID from deployedContracts.ts
     start_block: 1  # Minimum deployed block
+    rpc: http://localhost:8545  # Local chains only
     contracts:
-      - name: YourContract  # Contract name
+      - name: YourContract
         address:
           - '0x...'  # Contract address
-        handler: src/EventHandlers.ts
-        events:
-          - event: EventName(type1 param1, type2 param2)  # Event signatures
-unordered_multichain_mode: true
-preload_handlers: true
 ```
 
 ### schema.graphql
 GraphQL schema with entity definitions for each contract event.
 
 ### src/EventHandlers.ts
-TypeScript event handlers for processing blockchain events.
+TypeScript event handlers registered with `indexer.onEvent` from the `envio` package.
 
 ## Features
 
@@ -84,7 +86,7 @@ TypeScript event handlers for processing blockchain events.
 
 ## Requirements
 
-- Node.js 18+
+- Node.js 22+ (24 recommended)
 - pnpm (or npm/yarn)
 - TypeScript
 - envio CLI
@@ -126,13 +128,10 @@ pnpm install
 
 ## Development
 
-### Testing Individual Components
+### Running the Generator Directly
 ```bash
-# Test parser only
-ts-node se-integration/parseFiles.ts
-
-# Test config generation
-ts-node se-integration/updateConfig.ts
+# Same as pnpm run update
+pnpm exec tsx se-integration/updateEnvio.ts
 ```
 
 ### Adding New Chain Support

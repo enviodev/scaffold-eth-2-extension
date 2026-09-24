@@ -257,21 +257,19 @@ export function parseScaffoldEthFiles(
   const contracts = parseDeployedContracts(deployedContractsPath);
   
   // Group contracts by chain ID
-  const contractsByChain: Record<number, ContractInfo[]> = {};
+  const contractsByChain = new Map<number, ContractInfo[]>();
   contracts.forEach(contract => {
-    if (!contractsByChain[contract.chainId]) {
-      contractsByChain[contract.chainId] = [];
-    }
-    contractsByChain[contract.chainId].push(contract);
+    const chainContracts = contractsByChain.get(contract.chainId) ?? [];
+    chainContracts.push(contract);
+    contractsByChain.set(contract.chainId, chainContracts);
   });
   
   // Create chain info from the contracts
-  const chains: ChainInfo[] = Object.keys(contractsByChain).map(chainIdStr => {
-    const chainId = parseInt(chainIdStr);
+  const chains: ChainInfo[] = Array.from(contractsByChain, ([chainId, chainContracts]) => {
     return {
       id: chainId,
       rpcUrl: getDefaultRpcUrl(chainId),
-      contracts: contractsByChain[chainId]
+      contracts: chainContracts
     };
   });
   

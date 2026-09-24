@@ -2,15 +2,14 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml';
 import { execSync } from 'child_process';
-import { ParsedData } from './parseFiles';
+import type { ParsedData } from './parseFiles';
 import { updateSchemaFile, updateEventHandlersFile } from './schemaGenerator';
 
 export interface EnvioConfig {
   name: string;
+  disable_default_cross_chain: boolean;
   contracts: EnvioContractDefinition[];
-  networks: EnvioNetwork[];
-  unordered_multichain_mode: boolean;
-  preload_handlers: boolean;
+  chains: EnvioChain[];
 }
 
 export interface EnvioContractDefinition {
@@ -19,16 +18,14 @@ export interface EnvioContractDefinition {
   events: EnvioEvent[];
 }
 
-export interface EnvioNetwork {
+export interface EnvioChain {
   id: number;
   start_block: number;
-  rpc_config?: {
-    url: string;
-  };
-  contracts: EnvioNetworkContract[];
+  rpc?: string;
+  contracts: EnvioChainContract[];
 }
 
-export interface EnvioNetworkContract {
+export interface EnvioChainContract {
   name: string;
   address: string[];
 }
@@ -55,7 +52,7 @@ function isLocalDevelopmentChain(chainId: number): boolean {
 /**
  * Get default RPC URL for local development chains
  */
-function getLocalRpcUrl(chainId: number): string {
+function getLocalRpcUrl(_chainId: number): string {
   // Default to localhost:8545 for all local chains
   return 'http://localhost:8545';
 }
@@ -84,50 +81,41 @@ export function generateEnvioConfig(parsedData: ParsedData): EnvioConfig {
   
   const contracts = Array.from(contractMap.values());
   
-  // Then create networks that reference these contracts
-  const networks: EnvioNetwork[] = [];
+  // Then create chains that reference these contracts
+  const chains: EnvioChain[] = [];
   
   parsedData.chains.forEach(chain => {
     // Skip chains with no contracts
     if (chain.contracts.length === 0) return;
     
-    const networkContracts: EnvioNetworkContract[] = chain.contracts.map(contract => ({
+    const chainContracts: EnvioChainContract[] = chain.contracts.map(contract => ({
       name: contract.name,
       address: [contract.address]
     }));
     
-    // Determine RPC config first
-    let rpcConfig: { url: string } | undefined;
+    // Local chains have no HyperSync, so the RPC is used for sync
+    let rpcUrl: string | undefined;
     if (isLocalDevelopmentChain(chain.id)) {
-      let rpcUrl: string;
-      if (chain.rpcUrl) {
-        rpcUrl = chain.rpcUrl;
-      } else {
-        rpcUrl = getLocalRpcUrl(chain.id);
-      }
-      
-      rpcConfig = {
-        url: rpcUrl
-      };
+      rpcUrl = chain.rpcUrl ?? getLocalRpcUrl(chain.id);
     }
     
-    // Create network with proper property order
-    const network: EnvioNetwork = {
+    // Create chain with proper property order
+    const envioChain: EnvioChain = {
       id: chain.id,
       start_block: Math.min(...chain.contracts.map(c => c.deployedOnBlock)),
-      ...(rpcConfig && { rpc_config: rpcConfig }),
-      contracts: networkContracts
+      ...(rpcUrl && { rpc: rpcUrl }),
+      contracts: chainContracts
     };
     
-    networks.push(network);
+    chains.push(envioChain);
   });
   
   return {
     name: 'envio-indexer',
+    // Entities are stored per chain, the recommended setting for v3 indexers
+    disable_default_cross_chain: true,
     contracts,
-    networks,
-    unordered_multichain_mode: true,
-    preload_handlers: true
+    chains
   };
 }
 

@@ -36,11 +36,11 @@ This extension adds **automatic Envio indexer generation** to your Scaffold-ETH 
 ```bash
 cd packages/envio
 
-pnpm update   # Generate indexer from deployed contracts
-pnpm codegen  # Generate TypeScript types
-pnpm dev      # Start indexer in development mode
-pnpm start    # Start indexer in production mode
-pnpm test     # Run indexer tests
+pnpm run update  # Generate indexer from deployed contracts
+pnpm codegen     # Generate TypeScript types
+pnpm dev         # Start indexer in development mode
+pnpm start       # Start indexer in production mode
+pnpm test        # Run indexer tests
 ```
 
 
@@ -50,14 +50,14 @@ pnpm test     # Run indexer tests
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Node.js v20** (required)
+- **Node.js v22 or newer** (required, v24 recommended)
 - **pnpm** (for Envio indexer)
 - **Docker** (for running the indexer)
 - **Yarn** (for Scaffold-ETH)
 
 ### Setup (After Creating Project with Extension)
 1. Deploy your contracts: `yarn deploy`
-2. Generate the indexer: `cd packages/envio && pnpm install && pnpm update && pnpm codegen`
+2. Generate the indexer: `cd packages/envio && pnpm install && pnpm run update && pnpm codegen`
 3. Start the indexer: `pnpm dev`
 4. Access the dashboard at `http://localhost:3000/envio`
 
@@ -65,7 +65,7 @@ pnpm test     # Run indexer tests
 
 **Via Frontend:** Go to the envio page (`http://localhost:3000/envio`) and click the "Generate" button.
 
-**Via Command Line:** `cd packages/envio && pnpm update && pnpm codegen`
+**Via Command Line:** `cd packages/envio && pnpm run update && pnpm codegen`
 
 ---
 

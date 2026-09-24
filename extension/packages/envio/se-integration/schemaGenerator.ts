@@ -1,4 +1,5 @@
-import { ContractInfo, EventInfo } from './parseFiles';
+import * as fs from 'fs';
+import type { ContractInfo, EventInfo } from './parseFiles';
 
 /**
  * Map Solidity types to GraphQL types
@@ -38,7 +39,7 @@ function mapSolidityToGraphQLType(solidityType: string): string {
 
   // Handle fixed-size arrays
   const fixedArrayMatch = solidityType.match(/^(.+)\[(\d+)\]$/);
-  if (fixedArrayMatch) {
+  if (fixedArrayMatch?.[1]) {
     const baseType = fixedArrayMatch[1];
     const graphqlType = mapSolidityToGraphQLType(baseType);
     return `[${graphqlType}]!`;
@@ -106,19 +107,22 @@ export function generateGraphQLSchema(contracts: ContractInfo[]): string {
 function generateEventHandler(contractName: string, event: EventInfo): string {
   const entityName = generateEntityName(contractName, event.name);
   
-  let handler = `${contractName}.${event.name}.handler(async ({ event, context }) => {\n`;
-  handler += `  const entity: ${entityName} = {\n`;
-  handler += `    id: \`\${event.chainId}_\${event.block.number}_\${event.logIndex}\`,\n`;
+  let handler = `indexer.onEvent(\n`;
+  handler += `  { contract: "${contractName}", event: "${event.name}" },\n`;
+  handler += `  async ({ event, context }) => {\n`;
+  handler += `    const entity: ${entityName} = {\n`;
+  handler += `      id: \`\${event.chainId}_\${event.block.number}_\${event.logIndex}\`,\n`;
   
   // Add event parameters
   event.inputs.forEach(input => {
     const fieldName = input.name || 'param';
-    handler += `    ${fieldName}: event.params.${fieldName},\n`;
+    handler += `      ${fieldName}: event.params.${fieldName},\n`;
   });
   
-  handler += `  };\n\n`;
-  handler += `  context.${entityName}.set(entity);\n`;
-  handler += `});\n\n`;
+  handler += `    };\n\n`;
+  handler += `    context.${entityName}.set(entity);\n`;
+  handler += `  },\n`;
+  handler += `);\n\n`;
   
   return handler;
 }
@@ -132,6 +136,7 @@ export function generateEventHandlers(contracts: ContractInfo[]): string {
   handlers += ` * This file is auto-generated from scaffold-eth contracts\n`;
   handlers += ` */\n`;
   handlers += `import {\n`;
+  handlers += `  indexer,\n`;
   
   // Create a map to track unique contract types (by name)
   const uniqueContracts = new Map<string, ContractInfo>();
@@ -142,18 +147,17 @@ export function generateEventHandlers(contracts: ContractInfo[]): string {
     }
   });
   
-  // Generate imports
+  // Generate entity type imports
   const imports = new Set<string>();
   uniqueContracts.forEach(contract => {
-    imports.add(contract.name);
     contract.events.forEach(event => {
       const entityName = generateEntityName(contract.name, event.name);
       imports.add(entityName);
     });
   });
   
-  handlers += Array.from(imports).map(imp => `  ${imp}`).join(',\n');
-  handlers += `,\n} from "generated";\n\n`;
+  handlers += Array.from(imports).map(imp => `  type ${imp},\n`).join('');
+  handlers += `} from "envio";\n\n`;
   
   // Generate handlers for unique contract types only
   uniqueContracts.forEach(contract => {
@@ -175,7 +179,7 @@ export function updateSchemaFile(schemaPath: string, contracts: ContractInfo[]):
   console.log(schema);
   
   // Write to file
-  require('fs').writeFileSync(schemaPath, schema, 'utf-8');
+  fs.writeFileSync(schemaPath, schema, 'utf-8');
   console.log(`Updated schema file: ${schemaPath}`);
 }
 
@@ -189,6 +193,6 @@ export function updateEventHandlersFile(handlersPath: string, contracts: Contrac
   console.log(handlers);
   
   // Write to file
-  require('fs').writeFileSync(handlersPath, handlers, 'utf-8');
+  fs.writeFileSync(handlersPath, handlers, 'utf-8');
   console.log(`Updated event handlers file: ${handlersPath}`);
 }
