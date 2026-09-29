@@ -249,9 +249,11 @@ export function generateIndexerTest(contracts: ContractInfo[]): string | undefin
       test += `            {\n`;
       test += `              contract: "${contract.name}",\n`;
       test += `              event: "${event.name}",\n`;
-      test += `              params: {\n`;
-      test += paramLines;
-      test += `              },\n`;
+      if (paramLines) {
+        test += `              params: {\n`;
+        test += paramLines;
+        test += `              },\n`;
+      }
       test += `            },\n`;
       test += `          ],\n`;
       test += `        },\n`;

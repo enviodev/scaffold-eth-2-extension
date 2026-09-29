@@ -121,7 +121,8 @@ const EnvioPage = () => {
           "This will rewrite these files with boilerplate code:\n" +
           "• config.yaml\n" +
           "• schema.graphql\n" +
-          "• src/EventHandlers.ts\n\n" +
+          "• src/EventHandlers.ts\n" +
+          "• src/indexer.test.ts\n\n" +
           "Custom modifications will be lost. Continue?",
       )
     ) {
@@ -241,8 +242,8 @@ const EnvioPage = () => {
               </h3>
               <p className="text-sm text-base-content/70 mb-3">
                 Generate the Envio configuration files based on your current deployed contracts (deployed via yarn
-                deploy). This will overwrite the config.yaml, schema.graphql, and EventHandlers.ts files to set up a
-                boilerplate indexer ready to index these contracts
+                deploy). This will overwrite the config.yaml, schema.graphql, EventHandlers.ts and indexer.test.ts
+                files to set up a boilerplate indexer ready to index these contracts
               </p>
               <button
                 onClick={handleGenerateConfig}
