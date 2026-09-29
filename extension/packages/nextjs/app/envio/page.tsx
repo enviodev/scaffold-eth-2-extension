@@ -121,7 +121,8 @@ const EnvioPage = () => {
           "This will rewrite these files with boilerplate code:\n" +
           "• config.yaml\n" +
           "• schema.graphql\n" +
-          "• src/EventHandlers.ts\n\n" +
+          "• src/EventHandlers.ts\n" +
+          "• src/indexer.test.ts\n\n" +
           "Custom modifications will be lost. Continue?",
       )
     ) {
@@ -201,7 +202,7 @@ const EnvioPage = () => {
               <p className="text-sm text-base-content/70">
                 {indexerStatus === "inactive" ? (
                   <>
-                    Indexer is not running. Start the indexer by running <code>pnpm dev</code> in the{" "}
+                    Indexer is not running. Start the indexer by running <code>yarn dev</code> in the{" "}
                     <code>packages/envio</code> directory.
                     <br />
                     (be sure to generate it first if you haven&apos;t already)
@@ -241,8 +242,8 @@ const EnvioPage = () => {
               </h3>
               <p className="text-sm text-base-content/70 mb-3">
                 Generate the Envio configuration files based on your current deployed contracts (deployed via yarn
-                deploy). This will overwrite the config.yaml, schema.graphql, and EventHandlers.ts files to set up a
-                boilerplate indexer ready to index these contracts
+                deploy). This will overwrite the config.yaml, schema.graphql, EventHandlers.ts and indexer.test.ts
+                files to set up a boilerplate indexer ready to index these contracts
               </p>
               <button
                 onClick={handleGenerateConfig}
@@ -440,10 +441,7 @@ const EnvioPage = () => {
               </p>
               <ul className="text-sm text-base-content/70 text-left space-y-1">
                 <li>
-                  • <strong>Node.js v20</strong> - Required for the development environment
-                </li>
-                <li>
-                  • <strong>pnpm v8+</strong> - Package manager (use v8 or newer)
+                  • <strong>Node.js v22+</strong> - Required for the development environment (v24 recommended)
                 </li>
                 <li>
                   • <strong>Docker Desktop</strong> - Required for running the indexer locally
@@ -465,7 +463,7 @@ const EnvioPage = () => {
                   ready to index all events from your deployed contracts. You can regenerate this at any time.
                 </p>
                 <p>
-                  <strong>Step 3:</strong> Run <code className="bg-base-200 px-1 rounded">pnpm dev</code> in the{" "}
+                  <strong>Step 3:</strong> Run <code className="bg-base-200 px-1 rounded">yarn dev</code> in the{" "}
                   <code className="bg-base-200 px-1 rounded">packages/envio</code> directory to start the indexer. This
                   will begin indexing your contract events.
                 </p>
@@ -495,7 +493,7 @@ const EnvioPage = () => {
                   <p className="text-sm text-base-content/80">
                     <strong>Note:</strong> If you regenerate the boilerplate indexer after making changes, you&apos;ll
                     need to stop the running indexer (Ctrl+C) and restart it with{" "}
-                    <code className="bg-base-200 px-1 rounded">pnpm dev</code>
+                    <code className="bg-base-200 px-1 rounded">yarn dev</code>
                     for the changes to take effect.
                   </p>
                 </div>

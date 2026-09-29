@@ -7,7 +7,7 @@ This integration generates a boilerplate Envio indexer based on your deployed Sc
 The integration consists of three main components:
 
 1. **`parseFiles.ts`** - Parses deployedContracts.ts to extract contract and chain information
-2. **`configGenerator.ts`** - Generates envio config.yaml, schema.graphql, and EventHandlers.ts from parsed data
+2. **`configGenerator.ts`** - Generates envio config.yaml, schema.graphql, EventHandlers.ts and indexer.test.ts from parsed data
 3. **`updateEnvio.ts`** - Manual update script that can be triggered from the frontend
 
 ## Usage
@@ -24,17 +24,10 @@ You can also run the update manually from the command line:
 
 ```bash
 # From the packages/envio directory
-pnpm update
+yarn run update
 ```
 
-### Custom Paths
-```bash
-# Specify custom scaffold-eth path
-pnpm run update -- --scaffold-path=/path/to/your/scaffold-eth
-
-# Specify custom envio directory
-pnpm run update -- --envio-dir=/path/to/your/envio
-```
+The script uses the current directory as the Envio directory and the folder two levels up as the Scaffold-ETH root, so run it from `packages/envio`.
 
 ## What Files Are Parsed
 
@@ -54,38 +47,43 @@ The integration generates these Envio files:
 ### config.yaml
 ```yaml
 name: envio-indexer
-networks:
-  - id: 31337  # Chain ID from scaffold.config.ts
+disable_default_cross_chain: true
+contracts:
+  - name: YourContract  # Contract name
+    handler: src/EventHandlers.ts
+    events:
+      - event: EventName(type1 param1, type2 param2)  # Event signatures
+chains:
+  - id: 31337  # Chain ID from deployedContracts.ts
     start_block: 1  # Minimum deployed block
+    rpc: http://localhost:8545  # Local chains only
     contracts:
-      - name: YourContract  # Contract name
+      - name: YourContract
         address:
           - '0x...'  # Contract address
-        handler: src/EventHandlers.ts
-        events:
-          - event: EventName(type1 param1, type2 param2)  # Event signatures
-unordered_multichain_mode: true
-preload_handlers: true
 ```
 
 ### schema.graphql
 GraphQL schema with entity definitions for each contract event.
 
 ### src/EventHandlers.ts
-TypeScript event handlers for processing blockchain events.
+TypeScript event handlers registered with `indexer.onEvent` from the `envio` package.
+
+### src/indexer.test.ts
+A Vitest test that simulates one event from your contracts and checks the entity its handler writes. If no event has parameter types the test can simulate (for example, only fixed-size array parameters), the file is removed.
 
 ## Features
 
 - **Automatic Event Detection**: Extracts event signatures from contract ABIs
-- **Multi-Chain Support**: Handles multiple networks from scaffold.config.ts
+- **Multi-Chain Support**: Handles every chain listed in deployedContracts.ts
 - **Boilerplate Generation**: Creates complete indexer setup files
-- **Error Handling**: Graceful error handling with detailed logging
+- **Error Handling**: Detailed logging, and the update exits with an error if `envio codegen` fails
 - **TypeScript Support**: Full TypeScript support with proper type definitions
 
 ## Requirements
 
-- Node.js 18+
-- pnpm (or npm/yarn)
+- Node.js 22+ (24 recommended)
+- Yarn
 - TypeScript
 - envio CLI
 - Docker (for running the indexer)
@@ -99,8 +97,8 @@ TypeScript event handlers for processing blockchain events.
 
 After running the update:
 
-1. Run `pnpm codegen` to generate TypeScript types
-2. Run `pnpm dev` to start the indexer
+1. Run `yarn codegen` to generate TypeScript types
+2. Run `yarn dev` to start the indexer
 3. Access the Envio console at http://localhost:9898
 4. Access the Hasura console at http://localhost:8080
 
@@ -114,25 +112,21 @@ If you see errors about missing RPC endpoints or HyperSync configuration, this i
 3. Configure historical sync with RPC URLs
 
 ### File Not Found Errors
-Make sure the scaffold-eth path is correct and the expected files exist:
+Run the update from `packages/envio` and make sure this file exists (run `yarn deploy` first):
 - `packages/nextjs/contracts/deployedContracts.ts`
-- `packages/nextjs/scaffold.config.ts`
 
 ### TypeScript Compilation Errors
 Ensure all dependencies are installed:
 ```bash
-pnpm install
+yarn install
 ```
 
 ## Development
 
-### Testing Individual Components
+### Running the Generator Directly
 ```bash
-# Test parser only
-ts-node se-integration/parseFiles.ts
-
-# Test config generation
-ts-node se-integration/updateConfig.ts
+# Same as yarn run update
+yarn tsx se-integration/updateEnvio.ts
 ```
 
 ### Adding New Chain Support

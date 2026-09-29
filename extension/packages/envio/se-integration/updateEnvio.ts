@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { pathToFileURL } from 'url';
 import { parseScaffoldEthFiles } from './parseFiles';
 import { updateConfigAndCodegen } from './configGenerator';
 
@@ -92,6 +93,6 @@ async function main() {
 }
 
 // Run if this file is executed directly
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   main().catch(console.error);
 }
