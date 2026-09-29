@@ -196,3 +196,95 @@ export function updateEventHandlersFile(handlersPath: string, contracts: Contrac
   fs.writeFileSync(handlersPath, handlers, 'utf-8');
   console.log(`Updated event handlers file: ${handlersPath}`);
 }
+
+/**
+ * Build a sample value for an event parameter in the generated test.
+ * Returns undefined for types the generated test does not cover (tuples, fixed-size arrays).
+ */
+function sampleValueForType(solidityType: string): string | undefined {
+  if (solidityType.endsWith('[]')) {
+    return sampleValueForType(solidityType.slice(0, -2)) === undefined ? undefined : '[]';
+  }
+  if (solidityType === 'address') return 'Addresses.defaultAddress';
+  if (solidityType === 'string') return '"test"';
+  if (solidityType === 'bool') return 'true';
+  if (/^u?int\d*$/.test(solidityType)) return '1n';
+  if (solidityType === 'bytes') return '"0x"';
+  const fixedBytes = solidityType.match(/^bytes(\d+)$/);
+  if (fixedBytes?.[1]) return `"0x${'00'.repeat(Number(fixedBytes[1]))}"`;
+  return undefined;
+}
+
+/**
+ * Generate src/indexer.test.ts for the first contract event whose parameters the test can simulate.
+ * Returns undefined when no such event exists.
+ */
+export function generateIndexerTest(contracts: ContractInfo[]): string | undefined {
+  for (const contract of contracts) {
+    for (const event of contract.events) {
+      const params = event.inputs.map(input => ({
+        name: input.name || 'param',
+        value: sampleValueForType(input.type),
+      }));
+      if (params.some(p => p.value === undefined)) continue;
+
+      const entityName = generateEntityName(contract.name, event.name);
+      const paramLines = params.map(p => `                ${p.name}: ${p.value},\n`).join('');
+      const expectLines = params.map(p => `      ${p.name}: ${p.value},\n`).join('');
+
+      let test = `/*\n`;
+      test += ` * This file is auto-generated from scaffold-eth contracts\n`;
+      test += ` */\n`;
+      test += `import { describe, it } from "vitest";\n`;
+      test += `import { createTestIndexer, TestHelpers } from "envio";\n`;
+      test += `const { Addresses } = TestHelpers;\n\n`;
+      test += `describe("${contract.name} ${event.name} event tests", () => {\n`;
+      test += `  it("${entityName} is created correctly", async (t) => {\n`;
+      test += `    const indexer = createTestIndexer();\n\n`;
+      test += `    // Processing a simulated ${event.name} event on chain ${contract.chainId}\n`;
+      test += `    await indexer.process({\n`;
+      test += `      chains: {\n`;
+      test += `        ${contract.chainId}: {\n`;
+      test += `          simulate: [\n`;
+      test += `            {\n`;
+      test += `              contract: "${contract.name}",\n`;
+      test += `              event: "${event.name}",\n`;
+      test += `              params: {\n`;
+      test += paramLines;
+      test += `              },\n`;
+      test += `            },\n`;
+      test += `          ],\n`;
+      test += `        },\n`;
+      test += `      },\n`;
+      test += `    });\n\n`;
+      test += `    // Getting the entity written by the handler\n`;
+      test += `    const entities = await indexer.${entityName}.getAll();\n`;
+      test += `    t.expect(entities).toHaveLength(1);\n`;
+      test += `    t.expect(entities[0]).toMatchObject({\n`;
+      test += expectLines;
+      test += `    });\n`;
+      test += `  });\n`;
+      test += `});\n`;
+      return test;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Update src/indexer.test.ts so it matches the generated handlers, or remove it when no event can be simulated
+ */
+export function updateIndexerTestFile(testPath: string, contracts: ContractInfo[]): void {
+  const test = generateIndexerTest(contracts);
+
+  if (test === undefined) {
+    if (fs.existsSync(testPath)) {
+      fs.unlinkSync(testPath);
+      console.log(`Removed test file (no event with supported parameter types): ${testPath}`);
+    }
+    return;
+  }
+
+  fs.writeFileSync(testPath, test, 'utf-8');
+  console.log(`Updated test file: ${testPath}`);
+}

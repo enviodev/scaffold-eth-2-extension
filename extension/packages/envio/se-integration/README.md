@@ -7,7 +7,7 @@ This integration generates a boilerplate Envio indexer based on your deployed Sc
 The integration consists of three main components:
 
 1. **`parseFiles.ts`** - Parses deployedContracts.ts to extract contract and chain information
-2. **`configGenerator.ts`** - Generates envio config.yaml, schema.graphql, and EventHandlers.ts from parsed data
+2. **`configGenerator.ts`** - Generates envio config.yaml, schema.graphql, EventHandlers.ts and indexer.test.ts from parsed data
 3. **`updateEnvio.ts`** - Manual update script that can be triggered from the frontend
 
 ## Usage
@@ -76,12 +76,15 @@ GraphQL schema with entity definitions for each contract event.
 ### src/EventHandlers.ts
 TypeScript event handlers registered with `indexer.onEvent` from the `envio` package.
 
+### src/indexer.test.ts
+A Vitest test that simulates one event from your contracts and checks the entity its handler writes. If no event has parameter types the test can simulate (for example, only fixed-size array parameters), the file is removed.
+
 ## Features
 
 - **Automatic Event Detection**: Extracts event signatures from contract ABIs
 - **Multi-Chain Support**: Handles multiple networks from scaffold.config.ts
 - **Boilerplate Generation**: Creates complete indexer setup files
-- **Error Handling**: Graceful error handling with detailed logging
+- **Error Handling**: Detailed logging, and the update exits with an error if `envio codegen` fails
 - **TypeScript Support**: Full TypeScript support with proper type definitions
 
 ## Requirements

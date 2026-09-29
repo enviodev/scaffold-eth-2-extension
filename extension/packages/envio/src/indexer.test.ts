@@ -1,3 +1,6 @@
+/*
+ * This file is auto-generated from scaffold-eth contracts
+ */
 import { describe, it } from "vitest";
 import { createTestIndexer, TestHelpers } from "envio";
 const { Addresses } = TestHelpers;
@@ -5,9 +8,8 @@ const { Addresses } = TestHelpers;
 describe("YourContract GreetingChange event tests", () => {
   it("YourContract_GreetingChange is created correctly", async (t) => {
     const indexer = createTestIndexer();
-    const greetingSetter = Addresses.defaultAddress;
 
-    // Processing a simulated GreetingChange event on the local chain
+    // Processing a simulated GreetingChange event on chain 31337
     await indexer.process({
       chains: {
         31337: {
@@ -16,10 +18,10 @@ describe("YourContract GreetingChange event tests", () => {
               contract: "YourContract",
               event: "GreetingChange",
               params: {
-                greetingSetter,
-                newGreeting: "Hello World!",
+                greetingSetter: Addresses.defaultAddress,
+                newGreeting: "test",
                 premium: true,
-                value: 1000n,
+                value: 1n,
               },
             },
           ],
@@ -31,10 +33,10 @@ describe("YourContract GreetingChange event tests", () => {
     const entities = await indexer.YourContract_GreetingChange.getAll();
     t.expect(entities).toHaveLength(1);
     t.expect(entities[0]).toMatchObject({
-      greetingSetter,
-      newGreeting: "Hello World!",
+      greetingSetter: Addresses.defaultAddress,
+      newGreeting: "test",
       premium: true,
-      value: 1000n,
+      value: 1n,
     });
   });
 });

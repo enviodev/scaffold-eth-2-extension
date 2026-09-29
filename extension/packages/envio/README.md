@@ -16,6 +16,16 @@ Visit http://localhost:8080 to see the GraphQL Playground, local password is `te
 yarn codegen
 ```
 
+### Set up agent skills
+
+If you use an AI coding assistant, run this in `packages/envio` to add the HyperIndex skills to `.claude/skills/`
+
+```bash
+npx envio skills update
+```
+
+Run it again after you upgrade `envio` so the skills match the new release.
+
 ### Pre-requisites
 
 - [Node.js v22+ (v24 recommended)](https://nodejs.org/en/download/current)

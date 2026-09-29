@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as yaml from 'js-yaml';
 import { execSync } from 'child_process';
 import type { ParsedData } from './parseFiles';
-import { updateSchemaFile, updateEventHandlersFile } from './schemaGenerator';
+import { updateSchemaFile, updateEventHandlersFile, updateIndexerTestFile } from './schemaGenerator';
 
 export interface EnvioConfig {
   name: string;
@@ -170,6 +170,7 @@ export function runEnvioCodegen(envioDir: string): void {
     if (error.stderr) {
       console.log('Stderr:', error.stderr);
     }
+    throw new Error(`envio codegen failed: ${error.message}`);
   }
 }
 
@@ -191,6 +192,10 @@ export function updateConfigAndCodegen(
   // Update event handlers
   const handlersPath = path.join(envioDir, 'src/EventHandlers.ts');
   updateEventHandlersFile(handlersPath, parsedData.contracts);
+  
+  // Update the indexer test so it matches the generated handlers
+  const testPath = path.join(envioDir, 'src/indexer.test.ts');
+  updateIndexerTestFile(testPath, parsedData.contracts);
   
   // Run envio codegen
   runEnvioCodegen(envioDir);
