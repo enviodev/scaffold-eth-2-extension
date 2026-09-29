@@ -27,14 +27,7 @@ You can also run the update manually from the command line:
 yarn run update
 ```
 
-### Custom Paths
-```bash
-# Specify custom scaffold-eth path
-yarn run update --scaffold-path=/path/to/your/scaffold-eth
-
-# Specify custom envio directory
-yarn run update --envio-dir=/path/to/your/envio
-```
+The script uses the current directory as the Envio directory and the folder two levels up as the Scaffold-ETH root, so run it from `packages/envio`.
 
 ## What Files Are Parsed
 
@@ -82,7 +75,7 @@ A Vitest test that simulates one event from your contracts and checks the entity
 ## Features
 
 - **Automatic Event Detection**: Extracts event signatures from contract ABIs
-- **Multi-Chain Support**: Handles multiple networks from scaffold.config.ts
+- **Multi-Chain Support**: Handles every chain listed in deployedContracts.ts
 - **Boilerplate Generation**: Creates complete indexer setup files
 - **Error Handling**: Detailed logging, and the update exits with an error if `envio codegen` fails
 - **TypeScript Support**: Full TypeScript support with proper type definitions
@@ -119,9 +112,8 @@ If you see errors about missing RPC endpoints or HyperSync configuration, this i
 3. Configure historical sync with RPC URLs
 
 ### File Not Found Errors
-Make sure the scaffold-eth path is correct and the expected files exist:
+Run the update from `packages/envio` and make sure this file exists (run `yarn deploy` first):
 - `packages/nextjs/contracts/deployedContracts.ts`
-- `packages/nextjs/scaffold.config.ts`
 
 ### TypeScript Compilation Errors
 Ensure all dependencies are installed:
