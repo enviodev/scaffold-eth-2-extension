@@ -6,7 +6,7 @@
     "codegen": "envio codegen",
     "dev": "envio dev",
     "start": "envio start",
-    "test": "vitest run --test-timeout=20000",
+    "test": "vitest run --passWithNoTests --test-timeout=20000",
     "update": "tsx se-integration/updateEnvio.ts"
   },
   "devDependencies": {
