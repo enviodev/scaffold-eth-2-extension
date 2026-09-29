@@ -77,7 +77,7 @@ GraphQL schema with entity definitions for each contract event.
 TypeScript event handlers registered with `indexer.onEvent` from the `envio` package.
 
 ### src/indexer.test.ts
-A Vitest test that simulates one event from your contracts and checks the entity its handler writes. If no event has parameter types the test can simulate (for example, only tuple parameters), the file is removed.
+A Vitest test that simulates one event from your contracts and checks the entity its handler writes. If no event has parameter types the test can simulate (for example, only fixed-size array parameters), the file is removed.
 
 ## Features
 
