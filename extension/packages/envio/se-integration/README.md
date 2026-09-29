@@ -24,17 +24,10 @@ You can also run the update manually from the command line:
 
 ```bash
 # From the packages/envio directory
-pnpm run update
+yarn run update
 ```
 
-### Custom Paths
-```bash
-# Specify custom scaffold-eth path
-pnpm run update -- --scaffold-path=/path/to/your/scaffold-eth
-
-# Specify custom envio directory
-pnpm run update -- --envio-dir=/path/to/your/envio
-```
+The script uses the current directory as the Envio directory and the folder two levels up as the Scaffold-ETH root, so run it from `packages/envio`.
 
 ## What Files Are Parsed
 
@@ -82,7 +75,7 @@ A Vitest test that simulates one event from your contracts and checks the entity
 ## Features
 
 - **Automatic Event Detection**: Extracts event signatures from contract ABIs
-- **Multi-Chain Support**: Handles multiple networks from scaffold.config.ts
+- **Multi-Chain Support**: Handles every chain listed in deployedContracts.ts
 - **Boilerplate Generation**: Creates complete indexer setup files
 - **Error Handling**: Detailed logging, and the update exits with an error if `envio codegen` fails
 - **TypeScript Support**: Full TypeScript support with proper type definitions
@@ -90,7 +83,7 @@ A Vitest test that simulates one event from your contracts and checks the entity
 ## Requirements
 
 - Node.js 22+ (24 recommended)
-- pnpm (or npm/yarn)
+- Yarn
 - TypeScript
 - envio CLI
 - Docker (for running the indexer)
@@ -104,8 +97,8 @@ A Vitest test that simulates one event from your contracts and checks the entity
 
 After running the update:
 
-1. Run `pnpm codegen` to generate TypeScript types
-2. Run `pnpm dev` to start the indexer
+1. Run `yarn codegen` to generate TypeScript types
+2. Run `yarn dev` to start the indexer
 3. Access the Envio console at http://localhost:9898
 4. Access the Hasura console at http://localhost:8080
 
@@ -119,22 +112,21 @@ If you see errors about missing RPC endpoints or HyperSync configuration, this i
 3. Configure historical sync with RPC URLs
 
 ### File Not Found Errors
-Make sure the scaffold-eth path is correct and the expected files exist:
+Run the update from `packages/envio` and make sure this file exists (run `yarn deploy` first):
 - `packages/nextjs/contracts/deployedContracts.ts`
-- `packages/nextjs/scaffold.config.ts`
 
 ### TypeScript Compilation Errors
 Ensure all dependencies are installed:
 ```bash
-pnpm install
+yarn install
 ```
 
 ## Development
 
 ### Running the Generator Directly
 ```bash
-# Same as pnpm run update
-pnpm exec tsx se-integration/updateEnvio.ts
+# Same as yarn run update
+yarn tsx se-integration/updateEnvio.ts
 ```
 
 ### Adding New Chain Support
